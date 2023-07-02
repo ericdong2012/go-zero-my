@@ -113,6 +113,59 @@
 
 part2:
 rest
+    token   jwt
+    pathvar  context 里面加东西
+    httpx
+        router 定义了一些接口， 在router/patrouter 中实现,  在 server 中调用
+        request  封装了很多请求方法体  ParseHeaders， ParseForm， ParseJsonBody， ParsePath
+        response 封装了很多返回方法体，包括 error, ok, json 等
+        vars     常量
+
+    handler
+        能直接包装 http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
+        在engine 中调用
+
+    interval 和handler 类似，更多是中间件
+        cors
+            在server 中会调用到
+        security  对请求内容加密
+            用到了codec 中的rsa 加密，解密等
+        log
+        starter   里面有一些 proc 的监听器， 在 engine 中会调用到
+
+    router
+        是httpx 中router的实现
+
+        type patRouter struct {
+        	trees      map[string]*search.Tree
+        	notFound   http.Handler
+        	notAllowed http.Handler
+        }
+
+        ServeHTTP    server 中的tomiddle 中有用到, （应该是很多地方有用到，需要调试）
+
+    server
+        Server struct {
+        		ngin   *engine
+        		router httpx.Router
+        	}
+        )
+
+        NewServer
+        AddRoute
+
+        Start           调用engine 中的 start, (最终会调用starter中 StartHttp --> start )  --> bindRoutes -->  stat createMetrics,  bindFeaturedRoutes --> signatureVerifier, bindRoute --> 加载各种handler, appendAuthHandler, convertMiddleware,  router.Handle -->
+
+        use
+        withxxx          RouteOption
+        WithMiddleware   []Route
+
+    engine
+        start
+        bindRoutes
+
+    config 定义很多yaml 等配置文件的结构体
+    type
 
 part3:
 goctl
